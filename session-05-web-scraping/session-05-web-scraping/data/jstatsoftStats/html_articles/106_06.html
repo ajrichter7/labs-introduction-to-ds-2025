@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="en-US" xml:lang="en-US">
+<head>
+
+			
+											
+									
+		
+		<link rel="me" href="https://fosstodon.org/@jstatsoft" />
+
+		<meta name="og:title" content="gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection by Vincent Runge, Toby Dylan Hocking, Gaetano Romano, Fatemeh Afghah, Paul Fearnhead, Guillem Rigaill" />
+	<meta name="og:description" content="<p>In a world with data that change rapidly and abruptly, it is important to detect those changes accurately. In this paper we describe an R package implementing a generalized version of an algorithm recently proposed by Hocking, Rigaill, Fearnhead, and Bourque (2020) for penalized maximum likelihood inference of constrained multiple change-point models. This algorithm can be used to pinpoint the precise locations of abrupt changes in large data sequences. There are many application domains for such models, such as medicine, neuroscience or genomics. Often, practitioners have prior knowledge about the changes they are looking for. For example in genomic data, biologists sometimes expect peaks: up changes followed by down changes. Taking advantage of such prior information can substantially improve the accuracy with which we can detect and estimate changes. Hocking et al. (2020) described a graph framework to encode many examples of such prior information and a generic algorithm to infer the optimal model parameters, but implemented the algorithm for just a single scenario. We present the gfpop package that implements the algorithm in a generic manner in R/C++. gfpop works for a user-defined graph that can encode prior assumptions about the types of changes that are possible and implements several loss functions (Gauss, Poisson, binomial, biweight, and Huber). We then illustrate the use of gfpop on isotonic simulations and several applications in biology. For a number of graphs the algorithm runs in a matter of seconds or minutes for 105 data points.</p>" />
+	<meta name="og:image" content="https://www.jstatsoft.org/plugins/themes/bootstrap3JSS/images/jsslogo.jpg" />
+	<meta name="og:type" content="website" />
+	<meta name="og:url" content="https://doi.org/10.18637/jss.v106.i06" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@jstatsoft" />
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>
+		gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection
+							| Journal of Statistical Software
+			</title>
+
+	<!-- favicon -->
+	<link rel="apple-touch-icon" sizes="57x57"        href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60"        href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72"        href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76"        href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114"      href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120"      href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144"      href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152"      href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180"      href="/plugins/themes/bootstrap3JSS/favicon/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/plugins/themes/bootstrap3JSS/favicon/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32"   href="/plugins/themes/bootstrap3JSS/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96"   href="/plugins/themes/bootstrap3JSS/favicon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16"   href="/plugins/themes/bootstrap3JSS/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/plugins/themes/bootstrap3JSS/favicon//manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/plugins/themes/bootstrap3JSS/favicon//ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+
+
+	
+<meta name="generator" content="Open Journal Systems 3.3.0.20">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+<meta name="DC.Creator.PersonalName" content="Vincent Runge"/>
+<meta name="DC.Creator.PersonalName" content="Toby Dylan Hocking"/>
+<meta name="DC.Creator.PersonalName" content="Gaetano Romano"/>
+<meta name="DC.Creator.PersonalName" content="Fatemeh Afghah"/>
+<meta name="DC.Creator.PersonalName" content="Paul Fearnhead"/>
+<meta name="DC.Creator.PersonalName" content="Guillem Rigaill"/>
+<meta name="DC.Date.created" scheme="ISO8601" content="2023-03-27"/>
+<meta name="DC.Date.dateSubmitted" scheme="ISO8601" content="2021-02-26"/>
+<meta name="DC.Date.issued" scheme="ISO8601" content="2023-03-23"/>
+<meta name="DC.Date.modified" scheme="ISO8601" content="2023-03-27"/>
+<meta name="DC.Description" xml:lang="en" content="In a world with data that change rapidly and abruptly, it is important to detect those changes accurately. In this paper we describe an R package implementing a generalized version of an algorithm recently proposed by Hocking, Rigaill, Fearnhead, and Bourque (2020) for penalized maximum likelihood inference of constrained multiple change-point models. This algorithm can be used to pinpoint the precise locations of abrupt changes in large data sequences. There are many application domains for such models, such as medicine, neuroscience or genomics. Often, practitioners have prior knowledge about the changes they are looking for. For example in genomic data, biologists sometimes expect peaks: up changes followed by down changes. Taking advantage of such prior information can substantially improve the accuracy with which we can detect and estimate changes. Hocking et al. (2020) described a graph framework to encode many examples of such prior information and a generic algorithm to infer the optimal model parameters, but implemented the algorithm for just a single scenario. We present the gfpop package that implements the algorithm in a generic manner in R/C++. gfpop works for a user-defined graph that can encode prior assumptions about the types of changes that are possible and implements several loss functions (Gauss, Poisson, binomial, biweight, and Huber). We then illustrate the use of gfpop on isotonic simulations and several applications in biology. For a number of graphs the algorithm runs in a matter of seconds or minutes for 105 data points."/>
+<meta name="DC.Format" scheme="IMT" content="application/pdf"/>
+<meta name="DC.Format" scheme="IMT" content="application/gzip"/>
+<meta name="DC.Format" scheme="IMT" content="application/gzip"/>
+<meta name="DC.Format" scheme="IMT" content="text/plain"/>
+<meta name="DC.Identifier" content="v106i06"/>
+<meta name="DC.Identifier.pageNumber" content="1 - 39"/>
+<meta name="DC.Identifier.DOI" content="10.18637/jss.v106.i06"/>
+<meta name="DC.Identifier.URI" content="https://www.jstatsoft.org/index.php/jss/article/view/v106i06"/>
+<meta name="DC.Language" scheme="ISO639-1" content="en"/>
+<meta name="DC.Rights" content="Copyright (c) 2023 Vincent Runge, Toby Dylan Hocking, Gaetano Romano, Fatemeh Afghah, Paul Fearnhead, Guillem Rigaill"/>
+<meta name="DC.Rights" content="https://creativecommons.org/licenses/by/4.0"/>
+<meta name="DC.Source" content="Journal of Statistical Software"/>
+<meta name="DC.Source.ISSN" content="1548-7660"/>
+<meta name="DC.Source.Volume" content="106"/>
+<meta name="DC.Source.URI" content="https://www.jstatsoft.org/index.php/jss"/>
+<meta name="DC.Subject" xml:lang="en" content="change-point detection"/>
+<meta name="DC.Subject" xml:lang="en" content="constrained inference"/>
+<meta name="DC.Subject" xml:lang="en" content="maximum likelihood inference"/>
+<meta name="DC.Subject" xml:lang="en" content="dynamic programming"/>
+<meta name="DC.Subject" xml:lang="en" content="robust losses"/>
+<meta name="DC.Title" content="gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection"/>
+<meta name="DC.Type" content="Text.Serial.Journal"/>
+<meta name="DC.Type.articleType" content="Articles"/>
+<meta name="gs_meta_revision" content="1.1"/>
+<meta name="citation_journal_title" content="Journal of Statistical Software"/>
+<meta name="citation_journal_abbrev" content="J. Stat. Soft."/>
+<meta name="citation_issn" content="1548-7660"/> 
+<meta name="citation_author" content="Vincent Runge"/>
+<meta name="citation_author_institution" content="Université d'Évry"/>
+<meta name="citation_author" content="Toby Dylan Hocking"/>
+<meta name="citation_author_institution" content="Northern Arizona University"/>
+<meta name="citation_author" content="Gaetano Romano"/>
+<meta name="citation_author_institution" content="Lancaster University"/>
+<meta name="citation_author" content="Fatemeh Afghah"/>
+<meta name="citation_author_institution" content="Clemson University"/>
+<meta name="citation_author" content="Paul Fearnhead"/>
+<meta name="citation_author_institution" content="Lancaster University"/>
+<meta name="citation_author" content="Guillem Rigaill"/>
+<meta name="citation_author_institution" content="INRAE - Université d'Évry"/>
+<meta name="citation_title" content="gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection"/>
+<meta name="citation_language" content="en"/>
+<meta name="citation_date" content="2023/03/27"/>
+<meta name="citation_volume" content="106"/>
+<meta name="citation_firstpage" content="1"/>
+<meta name="citation_lastpage" content="39"/>
+<meta name="citation_doi" content="10.18637/jss.v106.i06"/>
+<meta name="citation_abstract_html_url" content="https://www.jstatsoft.org/index.php/jss/article/view/v106i06"/>
+<meta name="citation_keywords" xml:lang="en" content="change-point detection"/>
+<meta name="citation_keywords" xml:lang="en" content="constrained inference"/>
+<meta name="citation_keywords" xml:lang="en" content="maximum likelihood inference"/>
+<meta name="citation_keywords" xml:lang="en" content="dynamic programming"/>
+<meta name="citation_keywords" xml:lang="en" content="robust losses"/>
+<meta name="citation_pdf_url" content="https://www.jstatsoft.org/index.php/jss/article/download/v106i06/4466"/>
+<link rel="alternate" type="application/atom+xml" href="https://www.jstatsoft.org/index.php/jss/gateway/plugin/WebFeedGatewayPlugin/atom">
+<link rel="alternate" type="application/rdf+xml" href="https://www.jstatsoft.org/index.php/jss/gateway/plugin/WebFeedGatewayPlugin/rss">
+<link rel="alternate" type="application/rss+xml" href="https://www.jstatsoft.org/index.php/jss/gateway/plugin/WebFeedGatewayPlugin/rss2">
+	<link rel="stylesheet" href="https://www.jstatsoft.org/index.php/jss/$$$call$$$/page/page/css?name=bootstrap" type="text/css" />
+</head>
+<body class="pkp_page_article pkp_op_view has_site_logo">
+        <div class="pkp_structure_page">
+
+                <nav id="accessibility-nav" class="sr-only" role="navigation" aria-label="Quick jump to page content">
+                        <ul>
+                          <li><a href="#main-navigation">Main Navigation</a></li>
+                          <li><a href="#main-content">Main Content</a></li>
+                          <li><a href="#sidebar">Sidebar</a></li>
+                        </ul>
+                </nav>
+
+                                <header class="navbar navbar-default" id="headerNavigationContainer" role="banner" style="background-image: url('https://www.jstatsoft.org/plugins/themes/bootstrap3JSS/images/header-background.png');">
+
+                                                <div class="container">
+                                <div id="jss-logo" class="row">
+                                                                                                                                <a href="                                                https://www.jstatsoft.org/index.php/jss/index
+                                        " class="navbar-brand navbar-brand-logo">
+                                                        <img src="https://www.jstatsoft.org/public/journals/1/pageHeaderLogoImage_en_US.svg" alt="Journal of Statistical Software">
+                                                </a>
+                                                                                <nav aria-label="User Navigation">
+                                                	<ul id="navigationUser" class="nav nav-pills tab-list pull-right hidden-xs">
+														<li class=" menu-item-1">
+				<a href="https://www.jstatsoft.org/index.php/jss/user/register">
+					Register
+									</a>
+							</li>
+														<li class=" menu-item-2">
+				<a href="https://www.jstatsoft.org/index.php/jss/login">
+					Login
+									</a>
+							</li>
+										</ul>
+
+                                        </nav>
+                                </div><!-- .row -->
+                        </div><!-- .container -->
+
+                        <div class="container">
+
+                                <div class="navbar-header">
+
+                                                                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-menu" aria-expanded="false" aria-controls="nav-menu">
+                                                <span class="sr-only">Toggle navigation</span>
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                        </button>
+                                        <button type="button" class="navbar-toggle search-collapsed">
+						<a href="https://www.jstatsoft.org/search" target="_self">
+							<i class="fas fa-search"></i>	
+						</a>
+                                        </button>
+
+                                                                                                                                <div class="site-name">
+                                                                                                                                </div>
+                                        
+                                </div>
+
+                                                                
+                                                                        <nav id="nav-menu" class="navbar-collapse collapse" aria-label="Site Navigation">
+                                                                                                                                        	<ul id="main-navigation" class="nav navbar-nav">
+														<li class=" menu-item-25">
+				<a href="https://www.jstatsoft.org/index.php/jss/mission">
+					Information on Mission
+									</a>
+							</li>
+														<li class=" menu-item-26">
+				<a href="https://www.jstatsoft.org/index.php/jss/authors">
+					Information for Authors
+									</a>
+							</li>
+														<li class=" menu-item-27">
+				<a href="https://www.jstatsoft.org/index.php/jss/style">
+					Style Guide
+									</a>
+							</li>
+																					<li class=" menu-item-29 dropdown">
+				<a href="https://www.jstatsoft.org/index.php/jss/issue/archive" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					Volumes
+											<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu ">
+																					<li class=" menu-item-8">
+									<a href="https://www.jstatsoft.org/index.php/jss/issue/current">
+										Current
+									</a>
+								</li>
+																												<li class=" menu-item-9">
+									<a href="https://www.jstatsoft.org/index.php/jss/issue/archive">
+										Archives
+									</a>
+								</li>
+																		</ul>
+							</li>
+																					<li class=" menu-item-11 dropdown">
+				<a href="https://www.jstatsoft.org/index.php/jss/about" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					About
+											<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu ">
+																					<li class=" menu-item-12">
+									<a href="https://www.jstatsoft.org/index.php/jss/about">
+										About the Journal
+									</a>
+								</li>
+																												<li class=" menu-item-14">
+									<a href="https://www.jstatsoft.org/index.php/jss/about/editorialTeam">
+										Editorial Team
+									</a>
+								</li>
+																												<li class=" menu-item-13">
+									<a href="https://www.jstatsoft.org/index.php/jss/about/submissions">
+										Submissions
+									</a>
+								</li>
+																												<li class=" menu-item-15">
+									<a href="https://www.jstatsoft.org/index.php/jss/about/privacy">
+										Privacy Statement
+									</a>
+								</li>
+																												<li class=" menu-item-16">
+									<a href="https://www.jstatsoft.org/index.php/jss/about/contact">
+										Contact
+									</a>
+								</li>
+																		</ul>
+							</li>
+			</ul>
+
+                                
+	                                        	<ul id="navigationUserXs" class="nav navbar-nav visible-xs">
+														<li class=" menu-item-1">
+				<a href="https://www.jstatsoft.org/index.php/jss/user/register">
+					Register
+									</a>
+							</li>
+														<li class=" menu-item-2">
+				<a href="https://www.jstatsoft.org/index.php/jss/login">
+					Login
+									</a>
+							</li>
+										</ul>
+
+
+                                                                                                							<ul class="pull-right hidden-xs navbar-extra-buttons">
+								<li>
+									<a href="https://www.jstatsoft.org/search" target="_self"><i class="fas fa-search"></i>Search</a>
+								</li>
+							</ul>
+
+<!--
+							<div class="pull-md-right search-link">
+								<a href="https://www.jstatsoft.org/search" target="_self"><i class="fas fa-search"></i>Search</a>
+							</div>
+-->
+                                                                                        </nav>
+                                
+                        </div><!-- end .container -->
+                </header><!-- .pkp_structure_head -->
+
+                                <div class="pkp_structure_content container">
+                        <main class="pkp_structure_main col-sm-12 col-md-8" role="main">
+				
+								
+
+<div class="page page_article">
+			
+<nav class="cmp_breadcrumbs" role="navigation" aria-label="You are here:">
+	<ol class="breadcrumb">
+		<li>
+			<a href="https://www.jstatsoft.org/index.php/jss/index">
+				Home
+			</a>
+		</li>
+		<li>
+			<a href="https://www.jstatsoft.org/index.php/jss/issue/archive">
+				Archives
+			</a>
+		</li>
+		<li>
+			<a href="https://www.jstatsoft.org/index.php/jss/issue/view/v106">
+				Vol. 106 (2023)
+			</a>
+		</li>
+		<li class="active">
+															
+									Issue
+								6
+					</li>
+	</ol>
+</nav>
+	
+		<article class="article-details">
+
+                
+        <header>
+                <h1 class="page-header">
+                        gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection
+                                        </h1>
+
+                                        <div class="authors authors_long">
+                                					<nobr><span><strong>Vincent Runge</strong><a href="https://orcid.org/0000-0002-4857-1799" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-4857-1799"><i class="fab fa-orcid"></i></a>, </span></nobr>
+                                					<nobr><span><strong>Toby Dylan Hocking</strong><a href="https://orcid.org/0000-0002-3146-0865" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-3146-0865"><i class="fab fa-orcid"></i></a>, </span></nobr>
+                                					<nobr><span><strong>Gaetano Romano</strong><a href="https://orcid.org/0000-0002-7751-9017" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-7751-9017"><i class="fab fa-orcid"></i></a>, </span></nobr>
+                                					<nobr><span><strong>Fatemeh Afghah</strong><a href="https://orcid.org/0000-0002-2315-1173" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-2315-1173"><i class="fab fa-orcid"></i></a>, </span></nobr>
+                                					<nobr><span><strong>Paul Fearnhead</strong><a href="https://orcid.org/0000-0002-9386-2341" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-9386-2341"><i class="fab fa-orcid"></i></a>, </span></nobr>
+                                					<nobr><span><strong>Guillem Rigaill</strong><a href="https://orcid.org/0000-0002-7176-7511" class="orcid" target="_blank" alt="ORCID: https://orcid.org/0000-0002-7176-7511"><i class="fab fa-orcid"></i></a></span></nobr>
+                                                        </div>
+                        </header>
+
+        <div class="row">
+
+                <div class="col-xs-12">
+                        <section class="article-main">
+
+                                                                <h2 class="sr-only">Main Article Content</h2>
+
+                                                                                                        <div class="article-summary" id="summary">
+                                                <h2>Abstract</h2>
+                                                <div class="article-abstract">
+                                                        <p>In a world with data that change rapidly and abruptly, it is important to detect those changes accurately. In this paper we describe an R package implementing a generalized version of an algorithm recently proposed by Hocking, Rigaill, Fearnhead, and Bourque (2020) for penalized maximum likelihood inference of constrained multiple change-point models. This algorithm can be used to pinpoint the precise locations of abrupt changes in large data sequences. There are many application domains for such models, such as medicine, neuroscience or genomics. Often, practitioners have prior knowledge about the changes they are looking for. For example in genomic data, biologists sometimes expect peaks: up changes followed by down changes. Taking advantage of such prior information can substantially improve the accuracy with which we can detect and estimate changes. Hocking et al. (2020) described a graph framework to encode many examples of such prior information and a generic algorithm to infer the optimal model parameters, but implemented the algorithm for just a single scenario. We present the gfpop package that implements the algorithm in a generic manner in R/C++. gfpop works for a user-defined graph that can encode prior assumptions about the types of changes that are possible and implements several loss functions (Gauss, Poisson, binomial, biweight, and Huber). We then illustrate the use of gfpop on isotonic simulations and several applications in biology. For a number of graphs the algorithm runs in a matter of seconds or minutes for 105 data points.</p>
+                                                </div>
+                                        </div>
+                                
+                                
+
+                        </section><!-- .article-main -->
+
+                        <section class="article-more-details">
+
+                                                                <h2 class="sr-only">Article Details</h2>
+
+
+                        	                        	<h2 class="sr-only">Article Sidebar</h2>
+
+                        	                        	
+
+
+
+				                                <div class="pkp_block pkp_block_main article-meta">
+
+					<!-- TODO remove
+                                	<h2 class="title">
+                                	        Article Meta
+                                	</h2>
+					-->
+
+                        		                        								<div class="row">
+							<div class="col-xs-12 col-sm-3">
+								<strong>Files:</strong>
+							</div>
+							<div class="col-xs-12 col-sm-8">
+																																																															
+	
+		
+
+<a class="galley-link btn btn-primary pdf" role="button" href="https://www.jstatsoft.org/index.php/jss/article/view/v106i06/4466">
+
+		
+				<i class="fas fa-file-pdf"></i>
+						Paper
+
+	</a>
+																																																															
+	
+		
+
+<a class="galley-link btn btn-primary file" role="button" href="https://www.jstatsoft.org/index.php/jss/article/view/v106i06/4467">
+
+		
+				<i class="fas fa-file-download"></i>
+		R package (gfpop)
+
+	</a>
+																																																															
+	
+		
+
+<a class="galley-link btn btn-primary file" role="button" href="https://www.jstatsoft.org/index.php/jss/article/view/v106i06/4468">
+
+		
+				<i class="fas fa-file-download"></i>
+		R package (gfpop.data)
+
+	</a>
+																																																															
+	
+		
+
+<a class="galley-link btn btn-primary file" role="button" href="https://www.jstatsoft.org/index.php/jss/article/view/v106i06/4469">
+
+		
+				<i class="fas fa-file-download"></i>
+		R replication code
+
+	</a>
+															</div>
+						</div>
+                        		
+                        	                                	        						<div class="row">
+                        	                        							<div class="col-xs-12 col-sm-3">
+                        	                        	<strong>Published:</strong>
+							</div>
+							<div class="col-xs-12 col-sm-8">
+                        	                        	Mar 27, 2023
+							</div>
+						</div>
+
+                        	                                        	                                        	                                        	                                        	         <!-- end if date published -->
+
+					<!--
+										<div class="row">
+						<div class="col-xs-12 col-sm-3">
+                        	                	<strong>Volume:</strong>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+                        	                	<a href="https://www.jstatsoft.org/index.php/jss/issue/view/v106">
+                        	                	        Vol. 106 (2023)
+                        	                	</a>
+						</div>
+					</div>
+
+					                								<div class="row">
+						<div class="col-xs-12 col-sm-3">
+                        	                	<strong>Number:</strong>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+                        	                        6
+						</div>
+					</div>
+
+                        	                                	        						<div class="row">
+							<div class="col-xs-12 col-sm-3">
+                        	                		<strong>Section:</strong>
+							</div>
+							<div class="col-xs-12 col-sm-8">
+                        	                		Articles
+							</div>
+						</div>
+                        	        					-->
+
+
+                        	                                	                                	                                        	                                        	                                                	                                        	                							<div class="row">
+                        	                        	                        	                                								<div class="col-xs-12 col-sm-3">
+                        	                                	<strong>DOI:</strong>
+								</div>
+								<div class="col-xs-12 col-sm-8">
+                        	                                	<a href="https://doi.org/10.18637/jss.v106.i06">10.18637/jss.v106.i06</a>
+								</div>
+							</div>
+                        	                                        	        
+                        	                                	        						<div class="row">
+							<div class="col-xs-12 col-sm-3">
+                        	                		<strong>                        	                		        Keywords:</strong>
+							</div>
+							<div class="col-xs-12 col-sm-8">
+                        	                    		<span class="value">
+                        	                    		                        	                    								    			<form class="keyword-search" action="https://www.jstatsoft.org/search" method="post">
+						    				<input type="hidden" name="query" id="query" value="change-point detection">
+						    				<button>change-point detection</button>
+						    			</form>
+                        	                    								    			<form class="keyword-search" action="https://www.jstatsoft.org/search" method="post">
+						    				<input type="hidden" name="query" id="query" value="constrained inference">
+						    				<button>constrained inference</button>
+						    			</form>
+                        	                    								    			<form class="keyword-search" action="https://www.jstatsoft.org/search" method="post">
+						    				<input type="hidden" name="query" id="query" value="maximum likelihood inference">
+						    				<button>maximum likelihood inference</button>
+						    			</form>
+                        	                    								    			<form class="keyword-search" action="https://www.jstatsoft.org/search" method="post">
+						    				<input type="hidden" name="query" id="query" value="dynamic programming">
+						    				<button>dynamic programming</button>
+						    			</form>
+                        	                    								    			<form class="keyword-search" action="https://www.jstatsoft.org/search" method="post">
+						    				<input type="hidden" name="query" id="query" value="robust losses">
+						    				<button>robust losses</button>
+						    			</form>
+                        	                    		                        	                    		</span>
+							</div>
+						</div>
+                        	                                	</div>
+				
+
+                                                                                                                                                        
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                
+
+                                                                
+                        </section><!-- .article-details -->
+                </div><!-- .col-md-8 -->
+
+        </div><!-- .row -->
+
+</article>
+
+	
+
+</div><!-- .page -->
+
+        </main>
+
+        	<!--
+        $requestedPage: article
+	-->
+
+        
+                
+                <aside id="sidebar" class="pkp_structure_sidebar left col-sm-12 col-md-4" role="complementary" aria-label="Sidebar">
+
+		<div class="sidebar-separator hidden-md hidden-lg"></div>
+
+				<!--
+<div style="border-left: 5px solid #e92c90; background-color: #F8f8f8; padding: 0.25em 1em; margin: 0 2em 1em 1em;">
+<i class="fas fa-exclamation-triangle" style="color: #e92c90; padding-right: 0.5em"></i>
+Within the next week our system will undergo maintenance 
+Our system will be undergoing maintenance on <b>Weekday Month Day from 00:00 UTC to 00:00 UTC</b>.
+To avoid any loss of data, please <b>do not use</b> our editorial management system
+(do not submit articles, reviews, etc.) during this time.
+</div>
+-->
+<div style="border-left: 5px solid #e92c90; background-color: #F8f8f8; padding: 0.25em 1em; margin: 0 2em 1em 1em;">
+<i class="fas fa-exclamation-triangle" style="color: #e92c90; padding-right: 0.5em"></i>
+You can help us to improve our editorial management system by reporting possible issues
+[<a href="/announcement/view/12" target="_self">read more</a>].
+<!--
+We have transitioned to a new version of our editorial management system. You can help
+us to improve the system by reporting possible problems. Please read
+<a href="/announcement/view/12" target="_self">this announcement</a> for more details.
+-->
+</div>
+
+                
+              	
+		
+                
+
+                
+                
+                
+                					<div class="pkp_block how-to-cite">
+				<h2 class="title">
+					How to Cite
+				</h2>
+				<div class="content">
+					<div id="citationOutput" role="region" aria-live="polite">
+						<div class="csl-bib-body">
+  <div class="csl-entry">Runge, V., Hocking, T. D., Romano, G., Afghah, F., Fearnhead, P., &#38; Rigaill, G. (2023). gfpop: An R Package for Univariate Graph-Constrained Change-Point Detection. <i>Journal of Statistical Software</i>, <i>106</i>(6), 1–39. https://doi.org/10.18637/jss.v106.i06</div>
+</div>
+					</div>
+
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-controls="cslCitationFormats">
+					  	More Citation Formats
+					  	<span class="caret"></span>
+					  </button>
+
+					  <ul class="dropdown-menu" role="menu">
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/acm-sig-proceedings?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/acm-sig-proceedings?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				ACM
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/acs-nano?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/acs-nano?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				ACS
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/apa?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/apa?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				APA
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/associacao-brasileira-de-normas-tecnicas?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/associacao-brasileira-de-normas-tecnicas?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				ABNT
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/chicago-author-date?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/chicago-author-date?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				Chicago
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/harvard-cite-them-right?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/harvard-cite-them-right?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				Harvard
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/ieee?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/ieee?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				IEEE
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/modern-language-association?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/modern-language-association?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				MLA
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/turabian-fullnote-bibliography?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/turabian-fullnote-bibliography?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				Turabian
+					  			</a>
+					  		</li>
+					  						  		<li>
+					  			<a aria-controls="citationOutput"
+					  			   href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/vancouver?submissionId=4384&amp;publicationId=4148"
+					  			   data-load-citation
+					  			   data-json-href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/get/vancouver?submissionId=4384&amp;publicationId=4148&amp;return=json">
+					  				Vancouver
+					  			</a>
+					  		</li>
+					  						  </ul>         
+					</div>
+
+										<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-controls="cslCitationFormats">
+							Download Citation
+							<span class="caret"></span>
+						</button>
+										<ul class="dropdown-menu" role="menu">
+													<li>
+								<a href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/download/ris?submissionId=4384&amp;publicationId=4148">
+									<span class="fa fa-download"></span>
+									Endnote/Zotero/Mendeley (RIS)
+								</a>
+							</li>
+													<li>
+								<a href="https://www.jstatsoft.org/index.php/jss/citationstylelanguage/download/bibtex?submissionId=4384&amp;publicationId=4148">
+									<span class="fa fa-download"></span>
+									BibTeX
+								</a>
+							</li>
+											</ul>           
+					</div>
+									</div>
+			</div>
+		
+                                	<div class="pkp_block" id="jss-copyright">
+					<h2 class="title">License Information</h2>
+	
+	<div class="content">
+		
+		<i class="fab fa-2x fa-creative-commons"></i>
+		<i class="fab fa-2x fa-creative-commons-by"></i>
+		<img src="https://www.jstatsoft.org/plugins/themes/bootstrap3JSS/images/logos/GNU.svg">
+		<img src="https://www.jstatsoft.org/plugins/themes/bootstrap3JSS/images/logos/GPLv3.svg"><br />
+		
+		Article: <a href="http://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution License (CC-BY)</a><br />
+	
+	 	Software: GPL General Public License <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_self">version 2</a> or <a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_self">version 3</a> or a <a href="https://gnu.org/licenses/license-list.html#GPLCompatibleLicenses" target="_self">GPL-compatible license</a>.
+	
+	</div>
+			</div>
+                
+                </aside><!-- pkp_sidebar.left -->
+                </div><!-- pkp_structure_content -->
+
+        <footer class="footer" role="contentinfo">
+
+                <div class="container">
+
+                        <div class="row">
+                                <div class="col-sm-12 col-md-5">
+					<strong>Internal</strong>
+                                                                                                                                	<ul id="" class="footer-menu">
+														<li class=" menu-item-35">
+				<a href="https://www.jstatsoft.org/index.php/jss/librarians">
+					Information for Librarians
+									</a>
+							</li>
+														<li class=" menu-item-10">
+				<a href="https://www.jstatsoft.org/index.php/jss/announcement">
+					Announcements
+									</a>
+							</li>
+														<li class=" menu-item-12">
+				<a href="https://www.jstatsoft.org/index.php/jss/about">
+					About the Journal
+									</a>
+							</li>
+														<li class=" menu-item-14">
+				<a href="https://www.jstatsoft.org/index.php/jss/about/editorialTeam">
+					Editorial Team
+									</a>
+							</li>
+														<li class=" menu-item-25">
+				<a href="https://www.jstatsoft.org/index.php/jss/mission">
+					Information on Mission
+									</a>
+							</li>
+														<li class=" menu-item-16">
+				<a href="https://www.jstatsoft.org/index.php/jss/about/contact">
+					Contact
+									</a>
+							</li>
+														<li class=" menu-item-15">
+				<a href="https://www.jstatsoft.org/index.php/jss/about/privacy">
+					Privacy Statement
+									</a>
+							</li>
+			</ul>
+
+                                        
+					<div class="webfeed_footer">
+						<a href="https://www.jstatsoft.org/atom" target="_new">
+							<img src="https://www.jstatsoft.org/lib/pkp/templates/images/atom.svg" alt="Atom logo">
+						</a>
+						<a href="https://www.jstatsoft.org/atom" target="_new">
+							<img src="https://www.jstatsoft.org/lib/pkp/templates/images/rss20_logo.svg" alt="RSS2 logo">
+						</a>
+					</div>
+                                </div>
+                                <div class="col-sm-12 col-md-5">
+					<strong>External</strong>
+                                                                                                                                	<ul id="" class="footer-menu center">
+														<li class=" menu-item-38">
+				<a href="http://www.facebook.com/jstatsoft">
+					JSS @Facebook
+									</a>
+							</li>
+														<li class=" menu-item-39">
+				<a href="https://twitter.com/jstatsoft">
+					JSS @Twitter
+									</a>
+							</li>
+														<li class=" menu-item-40">
+				<a href="https://www.amstat.org/publications">
+					American Statistical Association Publications
+									</a>
+							</li>
+														<li class=" menu-item-41">
+				<a href="http://www.tandfonline.com/toc/ucgs20/current">
+					 Journal of Computational and Graphical Statistics
+									</a>
+							</li>
+														<li class=" menu-item-42">
+				<a href="http://www.tandfonline.com/toc/ucgs20/current">
+					Current Index to Statistics
+									</a>
+							</li>
+														<li class=" menu-item-44">
+				<a href="http://www.scimagojr.com/journalsearch.php?q=15487660&tip=iss&clean=0">
+					JSS in SCImago Journal Database
+									</a>
+							</li>
+														<li class=" menu-item-45">
+				<a href="https://doaj.org/toc/1548-7660">
+					JSS in Directory of Open Access Journals
+									</a>
+							</li>
+														<li class=" menu-item-46">
+				<a href="ftp://ftp.math.utah.edu/pub/tex/bib/jstatsoft.bib">
+					JSS BibTeX Database (1996-2015)
+									</a>
+							</li>
+														<li class=" menu-item-47">
+				<a href="http://ideas.repec.org/s/jss/jstsof.html">
+					JSS in IDEAS
+									</a>
+							</li>
+			</ul>
+
+                                        
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-2 pkpinfo" role="complementary">
+
+                                        <a href="https://www.jstatsoft.org/index.php/jss/about/aboutThisPublishingSystem">
+                                                <img class="img-responsive" alt="More information about the publishing system, Platform and Workflow by OJS/PKP." src="https://www.jstatsoft.org/templates/images/ojs_brand.png">
+                                        </a>
+                                </div>
+
+                        </div> <!-- .row -->
+                </div><!-- .container -->
+        </footer>
+</div><!-- pkp_structure_page -->
+
+<script src="https://www.jstatsoft.org/lib/pkp/lib/vendor/components/jquery/jquery.min.js?v=3.3.0.20" type="text/javascript"></script><script src="https://www.jstatsoft.org/lib/pkp/lib/vendor/components/jqueryui/jquery-ui.min.js?v=3.3.0.20" type="text/javascript"></script><script src="https://www.jstatsoft.org/lib/pkp/js/lib/jquery/plugins/jquery.tag-it.js?v=3.3.0.20" type="text/javascript"></script><script src="https://www.jstatsoft.org/plugins/themes/bootstrap3/bootstrap/js/bootstrap.min.js?v=3.3.0.20" type="text/javascript"></script><script src="https://www.jstatsoft.org/plugins/themes/bootstrap3JSS/fontawesome/js/all.min.js?v=3.3.0.20" type="text/javascript"></script><script src="https://www.jstatsoft.org/plugins/generic/citationStyleLanguage/js/articleCitation.js?v=3.3.0.20" type="text/javascript"></script>
+
+
+</body>
+</html>
