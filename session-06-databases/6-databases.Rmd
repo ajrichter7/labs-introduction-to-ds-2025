@@ -102,6 +102,7 @@ library(nycflights13)
 # flights 
 # planes
 # airlines
+print(airports)
 ```
 
 Let's perform a [left join](https://stat545.com/bit001_dplyr-cheatsheet.html#left_joinsuperheroes-publishers) on the flights and planes datasets. - *Note*: I'm going subset columns after the join, but only to keep text on the slide.
@@ -171,6 +172,18 @@ b) Which airline has the most flights with unregistered planes?
 
 ```{r}
 
+no_tailnum <- dplyr::anti_join(
+  flights,
+  planes, ## Not renaming "year" to "year_built" this time
+  by = "tailnum"
+) 
+
+flights %>% dplyr::anti_join(planes, by ="tailnum") %>% dplyr::count()
+
+flights |>
+  dplyr::anti_join(planes, by = "tailnum") |>
+  dplyr::count(carrier, sort = TRUE) |>
+  dplyr::left_join(airlines, by = "carrier")
 ```
 
 
@@ -408,6 +421,13 @@ b) Add the `airports` table to the database with the appropriate index.
 :::
 
 ```{r}
+dplyr::copy_to(
+  dest = con, 
+  df = nycflights13::airports, 
+  name = "airports", # we create the "planes" table
+  temporary = FALSE, 
+  indexes = "faa"
+)
 
 ```
 
@@ -523,6 +543,15 @@ b) Collect the results into a local dataframe.
 :::
 
 ```{r}
+print(airlines_db)
+airlines_db <-  dplyr::tbl(con, 'airlines')
+dplyr::left_join(
+  flights_db,
+  airlines_db, # taking care of name ambiguity
+  by = "carrier" ## Important: Be specific about the joining column
+) |>
+  dplyr::filter(day == "1" && month =="1") |>
+  dplyr::select(month, day, name, carrier, flight) 
 
 ```
 
