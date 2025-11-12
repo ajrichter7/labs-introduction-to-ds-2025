@@ -150,13 +150,13 @@ Running a model with a formula is straightforward. Note that we don't even have 
 lm(life_expectancy ~ gdp, data = life_expec_dat)
 ```
 
-Note: Both sides of this equation go by many names. The left-hand side, often written as y, may be called the dependent variable, response variable, or target variable, depending on context.The right-hand side, often written as X, may be referred to as the independent variables, explanatory variables, or regressors. These terms have subtle differences in meaning depending on the context, but for our purposes today it’s enough to know that they all refer to one of the two sides of a regression equation.
+Note: Both sides of this equation go by many names. The left-hand side, often written as y, may be called the dependent variable, response variable, or target variable, depending on context. The right-hand side, often written as X, may be referred to as the independent variables, explanatory variables, or regressors. These terms have subtle differences in meaning depending on the context, but for our purposes today it’s enough to know that they all refer to one of the two sides of a regression equation.
 
 ## Syntax
 
 A quick recap of the syntax used within formulas. The `~` (*tilde*) sign generally differentiates between dependent and independent variables. The `+` sign is used to distinguish between independent variables. Here are a few more common formula inputs that are useful to know:
 
-```r
+```{r}
 y ~ x1 + x2 # Standard formula
 
 y ~ . # Including all other columns in data as x variables.
@@ -209,8 +209,32 @@ Using the two-step approach, create formulas that perform the following regressi
 
 ```{r, echo= FALSE}
 # your code here
+formula_string <- paste("life_expectancy", "~ gdp")
+formula <- as.formula(formula_string)
+
+reg1 <- lm(formula, data = life_expec_dat) 
+reg2 <- lm(life_expectancy ~ gdp, data = life_expec_dat)
+reg1$coefficients == reg2$coefficients
+summary(reg2)
+
+formula_string3 <- paste("life_expectancy", "~ gdp + population + alcohol")
+formula3 <- as.formula(formula_string3)
+reg3 <- lm(formula3, data = life_expec_dat)
+summary(reg3)
+
+formula_string4 <- paste("life_expectancy", "~ gdp + population + alcohol + gdp*population")
+formula4 <- as.formula(formula_string4)
+reg4 <- lm(formula4, data = life_expec_dat)
+summary(reg4)
+
+formula_string5 <- paste("life_expectancy", "~ gdp + I(gdp^2) + I(log(population))")
+formula5 <- as.formula(formula_string5)
+reg5 <- lm(formula5, data = life_expec_dat)
+summary(reg5)
+
+
 ```
-:::
+
 
 ---
 
@@ -331,7 +355,13 @@ length(multiv_model_out)
 Look at the `multiv_model_out` object that you have just created. Try to get a sense of the structure of the output. Pick three different models and inspect their output using the `summary()` function. Consider which model you think is "best" and why.
 
 ```{r, echo= FALSE}
-# your code here
+
+#View the object visuall first from the global environment 
+#Look into stargazer package{https://www.rdocumentation.org/packages/stargazer/versions/5.2.3/topics/stargazer}
+for(i in 1:31){
+  print(summary(multiv_model_out[[i]]))
+}
+
 ```
 :::
 
@@ -609,7 +639,27 @@ Our implementation of `modelsummary` above is good, but it can be improved furth
 
 
 ```{r, echo= FALSE}
+model_table <- modelsummary::modelsummary(multiv_model_out[29:31], 
+                                        output = "kableExtra",
+                                        fmt = "%.2f",  # 2-digits and trailing 0  
+                                        estimate  = "{estimate}",
+                                        statistic = "conf.int",
+                                        coef_omit = "Intercept",
+                                        coef_rename=c("gdp"="Gdp", 
+                                                      "bmi"="Avg. BMI", 
+                                                      "alcohol" = "Alcohol Consum.",
+                                                      "hiv_aids"= "HIV cases", 
+                                                      "percentage_expenditure" = "Health Expenditure (% of GDP)",
+                                                      "life_expectancy" = "Life Expectancy"),
+                                        gof_omit = 'DF|Deviance|Log.Lik|AIC|BIC',
+                                        title = 'An Improved Regression Table',
+                                        notes = "Data sourced from the WHO via (https://www.kaggle.com/kumarajarshi/life-expectancy-who)",
+                                        escape = FALSE) |> 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, fixed_thead = T) |> 
+  row_spec(3, color = 'red') |>
+  row_spec(5, background = 'lightblue')
 
+model_table
 ```  
 :::
 ---

@@ -200,7 +200,7 @@ Once we have our scatter plot, adapt the code to:
 
 
 ```{r, figures-side, fig.show="hold",  warning=F}
-ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
   geom_point() + 
   labs(title = "Basic plot")
 ```
@@ -331,7 +331,9 @@ Create a histogram showing the distribution of penguin body mass using the `peng
 
 ```{r}
 # YOUR CODE HERE
-
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(bins = 15, fill = "red") +
+  theme_minimal()
 ```
 
 1. Now, look for a variable in the dataset that can be used to meaningfully group body mass. Use that variable to create a box plot or violin plot of body mass.
