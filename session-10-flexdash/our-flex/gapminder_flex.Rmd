@@ -1,5 +1,5 @@
 ---
-title: "Gapminder Dashboard"
+title: "Worldwide Life expectancy"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -14,22 +14,57 @@ library(rnaturalearth)
 library(dplyr)
 library(sf)
 library(shiny)
+library(gapminder)
+library(tidyverse)
 
 # Color palette
 pal <- colorNumeric("YlOrRd", domain = NULL)
 
 # Load African country boundaries
-africa <- ne_countries(continent = "Africa", returnclass = "sf")
+
+#africa <- ne_countries(continent = "Africa", returnclass = "sf") |> 
+ # mutate(name_custom = ifelse(su_a3 == "CIV", "Cote d'Ivoire", name_sort)) |>
+ # mutate(name_custom = ifelse(su == "SWZ", "Swaziland", name_sort)) |>
+ # mutate(name_custom = ifelse(su_a3 == "EGY", "Egypt", name_sort)) |>
 ```
 
+```{r}
 
+```
+Column {.sidebar}
+-----------------------------------------------------------------------
 
+```{r}
+# Year selector widget
+#selectInput("year", 
+    #        "Select Year:", 
+     #       choices = unique(gapminder$year),
+    #        selected = 2007)
+
+world_countries <- ne_countries(returnclass = "sf")
+
+world <- read_csv("https://ourworldindata.org/grapher/homicide-rate-unodc.csv?v=1&csvType=full&useColumnShortNames=true") |> 
+  rename(homocide_rate = value__category_total__sex_total__age_total__unit_of_measurement_rate_per_100_000_population) 
+
+world_data <- world_countries |>
+  left_join(world, by = c("admin" = "Entity")) |> filter(!is.na(Code))
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
 ### African Countries 
 ```{r}
 # Plot 
-leaflet(africa) |>
+leaflet(world_data) |>
   addTiles() |>
-  addPolygons()
+  addPolygons(fillColor = ~pal(homocide_rate), # EXERCISE 1: Plot with colors
+    fillOpacity = 0.7 # EXERCISE 1: Plot with colors
+  ) |>
+  addLegend( # EXERCISE 1: Legend
+    pal = pal,
+    values = ~homocide_rate,
+    title = "Homocide Rate",
+    position = "bottomleft"
+  ) 
+
 ```
-
-
